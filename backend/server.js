@@ -112,10 +112,11 @@ const start = async () => {
       console.log(`[APEX] Environment: ${process.env.NODE_ENV}`);
       console.log(`[APEX] Upload directory: ${uploadDir}`);
     });
-  } catch (err) {
-    console.error('[APEX] Failed to start:', err.message);
-    process.exit(1);
-  }
+ } catch (err) {
+  console.error('[APEX] Failed to start:');
+  console.error(err);
+  process.exit(1);
+  } 
 };
 
 start();
