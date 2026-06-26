@@ -7,7 +7,7 @@ const path = require('path');
 const fs = require('fs');
 const cookieParser = require('cookie-parser');
 const { initSchema } = require('./db');
-const { helmetConfig, generalLimiter } = require('./middleware/security');
+const { helmetConfig, generalLimiter } = require('./security');
 
 const authRoutes = require('./routes/auth');
 const postsRoutes = require('./routes/posts');
