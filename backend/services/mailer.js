@@ -1,3 +1,49 @@
+// services/mailer.js â€” Nodemailer email notification service
+const nodemailer = require('nodemailer');
+
+let transporter = null;
+
+const getTransporter = () => {
+  if (transporter) return transporter;
+  transporter = nodemailer.createTransport({
+    host: process.env.EMAIL_HOST || 'smtp.gmail.com',
+    port: parseInt(process.env.EMAIL_PORT) || 587,
+    secure: false,
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
+    tls: { rejectUnauthorized: false },
+  });
+  return transporter;
+};
+
+const sendProjectNotification = async (project) => {
+  const mailer = getTransporter();
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <style>
+        body { font-family: Arial, sans-serif; background: #0a0a0f; color: #e0e0e0; }
+        .container { max-width: 600px; margin: 0 auto; padding: 24px; }
+        .header { background: linear-gradient(135deg, #b8860b, #1a2a4a); padding: 20px; border-radius: 8px 8px 0 0; text-align: center; }
+        .header h1 { color: #ffd700; margin: 0; font-size: 22px; letter-spacing: 2px; }
+        .body { background: #111827; padding: 24px; border-radius: 0 0 8px 8px; border: 1px solid #b8860b44; }
+        .field { margin-bottom: 14px; }
+        .label { color: #b8860b; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
+        .value { color: #f0f0f0; font-size: 15px; margin-top: 4px; padding: 8px; background: #1a1a2e; border-radius: 4px; border-left: 3px solid #b8860b; }
+        .footer { text-align: center; margin-top: 20px; color: #666; font-size: 12px; }
+        .badge { display: inline-block; background: #b8860b22; border: 1px solid #b8860b; color: #ffd700; padding: 4px 12px; border-radius: 20px; font-size: 12px; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <h1>âš¡ APEX CREATIONS</h1>
+          <p style="color:#aaa;margin:6px 0 0">New Project Registration Alert</p>
+        </div>
+        <div class="body">
           <p style="color:#ffd700;margin-bottom:20px">Lord Nejju, a new client has submitted a project registration.</p>
 
           <div class="field">
@@ -71,4 +117,3 @@ const escapeHtml = (str) => {
 };
 
 module.exports = { sendProjectNotification };
-
