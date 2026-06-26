@@ -6,7 +6,7 @@ const xss = require('xss');
 const path = require('path');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
-const { pool } = require('../db');
+const { pool } = require('./db');
 
 // ─── Helmet: HTTP Security Headers ─────────────────────────────────────────
 const helmetConfig = helmet({
