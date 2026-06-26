@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Apex Creations — Premium Web Development, Logo, Fashion & Book Cover Design. Learn Python, Termux, HTML & Full-Stack Development." />
+  <meta name="theme-color" content="#0a0a0f" />
+  <title>APEX CREATIONS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Exo+2:ital,wght@0,300;0,400;0,600;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/main.css" />
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════
+     INTRO ANIMATION OVERLAY
+═══════════════════════════════════════════════════════ -->
+<div id="intro-overlay">
+  <canvas id="intro-canvas"></canvas>
+  <div id="intro-content">
+    <svg id="intro-svg" viewBox="0 0 400 120" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+          <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <linearGradient id="textGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:#ffd700"/>
+          <stop offset="50%" style="stop-color:#ffffff"/>
+          <stop offset="100%" style="stop-color:#b8860b"/>
+        </linearGradient>
+      </defs>
+      <path id="apex-path" d="M10,90 L60,20 L110,90 M35,65 L85,65" stroke="url(#textGrad)" stroke-width="3" fill="none" filter="url(#glow)" stroke-dasharray="500" stroke-dashoffset="500"/>
+      <text id="intro-text" x="200" y="70" text-anchor="middle" fill="url(#textGrad)" font-family="Orbitron" font-size="42" font-weight="900" filter="url(#glow)" opacity="0">APEX</text>
+      <text id="intro-sub" x="200" y="100" text-anchor="middle" fill="#b8860b" font-family="Orbitron" font-size="16" font-weight="400" letter-spacing="8" opacity="0">CREATIONS</text>
+    </svg>
+    <div id="intro-tagline">Elite Digital Craftsmanship</div>
+    <div id="intro-progress-bar"><div id="intro-progress-fill"></div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     HIDDEN ADMIN TRIGGER ZONE (top-left 50x50)
+═══════════════════════════════════════════════════════ -->
+<div id="admin-trigger-zone" aria-hidden="true"></div>
+
+<!-- ═══════════════════════════════════════════════════════
+     ADMIN LOGIN OVERLAY
+═══════════════════════════════════════════════════════ -->
+<div id="admin-login-overlay" class="hidden">
+  <div class="glass-panel" id="admin-login-panel">
+    <button class="close-btn" id="close-admin-login" aria-label="Close">✕</button>
+    <div class="admin-login-logo">
+      <svg width="60" height="60" viewBox="0 0 60 60">
+        <polygon points="30,5 55,50 5,50" fill="none" stroke="#ffd700" stroke-width="2"/>
+        <polygon points="30,15 47,48 13,48" fill="#ffd70011" stroke="#b8860b" stroke-width="1"/>
+        <circle cx="30" cy="30" r="5" fill="#ffd700"/>
+      </svg>
+    </div>
+    <h2 class="admin-login-title">APEX ADMIN</h2>
+    <p class="admin-login-sub">Secure Access Portal</p>
+    <div class="form-group">
+      <label for="admin-username">Username</label>
+      <input type="text" id="admin-username" autocomplete="off" spellcheck="false" placeholder="Enter username" maxlength="50" />
+    </div>
+    <div class="form-group">
+      <label for="admin-password">Password</label>
+      <input type="password" id="admin-password" autocomplete="off" placeholder="Enter password" maxlength="100" />
+    </div>
+    <div id="admin-login-error" class="error-msg hidden"></div>
+    <button class="btn-primary" id="admin-login-btn">
+      <span>AUTHENTICATE</span>
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     WELCOME ANIMATION OVERLAY
+═══════════════════════════════════════════════════════ -->
+<div id="welcome-overlay" class="hidden">
+  <canvas id="welcome-canvas"></canvas>
+  <div id="welcome-content">
+    <div id="welcome-text"></div>
+    <div id="welcome-sub-text"></div>
+    <div id="welcome-enter-btn" class="hidden">
+      <button class="btn-gold" id="enter-dashboard-btn">ENTER THE CHAMBER</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     ADMIN DASHBOARD
+═══════════════════════════════════════════════════════ -->
+<div id="admin-dashboard" class="hidden">
+  <header class="dash-header">
+    <div class="dash-logo">
+      <span class="dash-logo-icon">⬡</span>
+      <span>APEX ADMIN</span>
+    </div>
+    <nav class="dash-nav">
+      <button class="dash-nav-btn active" data-panel="posts">Posts</button>
+      <button class="dash-nav-btn" data-panel="projects">Client Requests</button>
+    </nav>
+    <button class="btn-logout" id="admin-logout-btn">Logout</button>
+  </header>
+
+  <!-- Posts Panel -->
+  <div id="panel-posts" class="dash-panel active">
+    <div class="dash-panel-header">
+      <h2>Content Management</h2>
+      <button class="btn-gold" id="new-post-btn">+ New Post</button>
+    </div>
+
+    <!-- Post Creation Form -->
+    <div id="post-form-container" class="glass-panel form-card hidden">
+      <h3>Create New Post</h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="post-category">Category</label>
+          <select id="post-category">
+            <option value="web_development">Web Development</option>
+            <option value="logo_creation">Logo Creation</option>
+            <option value="fashion_design">Fashion Design</option>
+            <option value="book_cover_design">Book Cover Design</option>
+            <option value="announcement">Announcement</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="post-title">Title</label>
+          <input type="text" id="post-title" maxlength="255" placeholder="Post title..." />
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="post-description">Description</label>
+        <textarea id="post-description" maxlength="5000" placeholder="Write post description..."></textarea>
+      </div>
+      <div class="form-group">
+        <label for="post-tags">Tags (comma-separated)</label>
+        <input type="text" id="post-tags" maxlength="500" placeholder="logo, branding, premium..." />
+      </div>
+      <div class="form-group">
+        <label for="post-image">Image (max 5MB)</label>
+        <div class="file-drop-zone" id="file-drop-zone">
+          <input type="file" id="post-image" accept="image/jpeg,image/png,image/webp,image/gif" class="file-input-hidden" />
+          <div class="file-drop-label">
+            <span class="file-drop-icon">📁</span>
+            <span>Drop image here or click to browse</span>
+          </div>
+          <div id="file-preview-container" class="hidden">
+            <img id="file-preview-img" src="" alt="Preview" />
+            <button type="button" id="file-remove-btn">✕</button>
+          </div>
+        </div>
+      </div>
+      <div id="post-form-error" class="error-msg hidden"></div>
+      <div class="form-actions">
+        <button class="btn-secondary" id="cancel-post-btn">Cancel</button>
+        <button class="btn-gold" id="submit-post-btn">PUBLISH POST</button>
+      </div>
+    </div>
+
+    <!-- Posts List -->
+    <div id="posts-list-container">
+      <div class="filter-bar">
+        <button class="filter-btn active" data-cat="all">All</button>
+        <button class="filter-btn" data-cat="web_development">Web Dev</button>
+        <button class="filter-btn" data-cat="logo_creation">Logo</button>
+        <button class="filter-btn" data-cat="fashion_design">Fashion</button>
+        <button class="filter-btn" data-cat="book_cover_design">Book Cover</button>
+        <button class="filter-btn" data-cat="announcement">Announcements</button>
+      </div>
+      <div id="admin-posts-grid" class="posts-admin-grid">
+        <div class="loading-state">Loading posts...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Projects Panel -->
+  <div id="panel-projects" class="dash-panel">
+    <div class="dash-panel-header">
+      <h2>Client Requests</h2>
+      <div class="project-stats" id="project-stats"></div>
+    </div>
+    <div class="filter-bar">
+      <button class="filter-btn active" data-status="all">All</button>
+      <button class="filter-btn" data-status="pending">Pending</button>
+      <button class="filter-btn" data-status="reviewed">Reviewed</button>
+    </div>
+    <div id="projects-list" class="projects-list">
+      <div class="loading-state">Loading requests...</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     MAIN PUBLIC WEBSITE
+═══════════════════════════════════════════════════════ -->
+<div id="main-site" class="hidden">
+
+  <!-- Particle Background Canvas -->
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- Navigation -->
+  <nav id="main-nav">
+    <div class="nav-logo">
+      <span class="nav-logo-mark">▲</span>
+      <span class="nav-logo-text">APEX<span class="nav-logo-sub">CREATIONS</span></span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#services">Services</a></li>
+      <li><a href="#portfolio">Portfolio</a></li>
+      <li><a href="#learn">Academy</a></li>
+      <li><a href="#register">Get Started</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <button class="nav-cta" onclick="document.getElementById('register').scrollIntoView({behavior:'smooth'})">Commission Project</button>
+    <button class="nav-hamburger" id="nav-hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+  <div id="nav-mobile-menu" class="nav-mobile-menu hidden">
+    <a href="#services" class="mobile-link">Services</a>
+    <a href="#portfolio" class="mobile-link">Portfolio</a>
+    <a href="#learn" class="mobile-link">Academy</a>
+    <a href="#register" class="mobile-link">Get Started</a>
+    <a href="#contact" class="mobile-link">Contact</a>
+  </div>
+
+  <!-- ─── HERO ──────────────────────────────────────────── -->
+  <section id="hero">
+    <div class="hero-inner">
+      <div class="hero-eyebrow">Est. 2024 · Premium Digital Studio</div>
+      <h1 class="hero-title">
+        <span class="hero-title-line">CRAFT THE</span>
+        <span class="hero-title-line hero-title-gold">EXTRAORDINARY</span>
+      </h1>
+      <p class="hero-desc">
+        Apex Creations delivers elite web development, stunning visual identities, and world-class design. We also teach the next generation of developers through our Python, Termux, HTML &amp; full-stack programs.
+      </p>
+      <div class="hero-ctas">
+        <button class="btn-gold hero-cta-main" onclick="document.getElementById('register').scrollIntoView({behavior:'smooth'})">
+          Commission a Project
+        </button>
+        <a href="https://t.me/ApexCreations_Official" target="_blank" rel="noopener noreferrer" class="btn-outline-gold">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+          Join Telegram
+        </a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><span class="hero-stat-num">4</span><span class="hero-stat-label">Core Services</span></div>
+        <div class="hero-stat-divider"></div>
+        <div class="hero-stat"><span class="hero-stat-num">100%</span><span class="hero-stat-label">Custom Work</span></div>
+        <div class="hero-stat-divider"></div>
+        <div class="hero-stat"><span class="hero-stat-num">∞</span><span class="hero-stat-label">Revisions</span></div>
+      </div>
+    </div>
+    <div class="hero-scroll-hint">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ─── SERVICES ─────────────────────────────────────── -->
+  <section id="services">
+    <div class="section-inner">
+      <div class="section-eyebrow">What We Build</div>
+      <h2 class="section-title">Core Services</h2>
+      <div class="services-grid">
+        <div class="service-card" data-service="web_development">
+          <div class="service-icon">⬡</div>
+          <h3>Web Development</h3>
+          <p>Full-stack, responsive, high-performance web applications built with modern frameworks. From landing pages to complex SaaS platforms.</p>
+          <div class="service-tags"><span>React</span><span>Node.js</span><span>PostgreSQL</span></div>
+        </div>
+        <div class="service-card" data-service="logo_creation">
+          <div class="service-icon">◈</div>
+          <h3>Logo Creation</h3>
+          <p>Timeless brand identities that speak without words. Vector-perfect, versatile logos crafted to dominate any medium.</p>
+          <div class="service-tags"><span>Brand Identity</span><span>Vector Art</span><span>Scalable</span></div>
+        </div>
+        <div class="service-card" data-service="fashion_design">
+          <div class="service-icon">✦</div>
+          <h3>Fashion Design</h3>
+          <p>Avant-garde fashion concepts and wearable art. From streetwear silhouettes to luxury editorial pieces.</p>
+          <div class="service-tags"><span>Editorial</span><span>Streetwear</span><span>Luxury</span></div>
+        </div>
+        <div class="service-card" data-service="book_cover_design">
+          <div class="service-icon">▣</div>
+          <h3>Book Cover Design</h3>
+          <p>Covers that compel readers before they read a single word. Premium typographic and illustrative compositions.</p>
+          <div class="service-tags"><span>Typography</span><span>Illustration</span><span>Print-Ready</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── PORTFOLIO ─────────────────────────────────────── -->
+  <section id="portfolio">
+    <div class="section-inner">
+      <div class="section-eyebrow">Our Work</div>
+      <h2 class="section-title">Portfolio</h2>
+      <div class="portfolio-filter">
+        <button class="port-filter-btn active" data-cat="all">All Work</button>
+        <button class="port-filter-btn" data-cat="web_development">Web Dev</button>
+        <button class="port-filter-btn" data-cat="logo_creation">Logos</button>
+        <button class="port-filter-btn" data-cat="fashion_design">Fashion</button>
+        <button class="port-filter-btn" data-cat="book_cover_design">Book Covers</button>
+        <button class="port-filter-btn" data-cat="announcement">Announcements</button>
+      </div>
+      <div id="portfolio-grid" class="portfolio-grid">
+        <div class="loading-state">Loading portfolio...</div>
+      </div>
+      <div id="portfolio-empty" class="empty-state hidden">
+        <div class="empty-icon">◈</div>
+        <p>Portfolio content coming soon.<br/>Follow us on <a href="https://t.me/ApexCreations_Official" target="_blank" rel="noopener">Telegram</a> for updates.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── LEARN / ACADEMY ──────────────────────────────── -->
+  <section id="learn">
+    <div class="section-inner">
+      <div class="section-eyebrow">Academy</div>
+      <h2 class="section-title">Learn With Apex</h2>
+      <p class="section-desc">Master the technologies that power the modern web. Our courses are battle-tested, practical, and built for results.</p>
+      <div class="learn-grid">
+        <div class="learn-card">
+          <div class="learn-icon">🐍</div>
+          <h3>Python</h3>
+          <p>From fundamentals to automation, data science, and backend development. The language that powers the world.</p>
+        </div>
+        <div class="learn-card">
+          <div class="learn-icon">📱</div>
+          <h3>Termux</h3>
+          <p>Transform your Android device into a powerful Linux development environment. Hack, automate, build — anywhere.</p>
+        </div>
+        <div class="learn-card">
+          <div class="learn-icon">🌐</div>
+          <h3>HTML & CSS</h3>
+          <p>The bedrock of the web. Build beautiful, accessible, responsive interfaces from day one.</p>
+        </div>
+        <div class="learn-card">
+          <div class="learn-icon">⚡</div>
+          <h3>Full-Stack Dev</h3>
+          <p>End-to-end application development. Databases, APIs, authentication, deployment — the complete picture.</p>
+        </div>
+      </div>
+      <div class="learn-cta">
+        <a href="https://t.me/ApexCreations_Official" target="_blank" rel="noopener noreferrer" class="btn-gold">
+          Join the Academy on Telegram →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── PROJECT REGISTRATION ─────────────────────────── -->
+  <section id="register">
+    <div class="section-inner">
+      <div class="section-eyebrow">Commission a Project</div>
+      <h2 class="section-title">Start Your Project</h2>
+      <p class="section-desc">Fill in the details below. We'll review your submission and reach out within 24 hours.</p>
+
+      <form id="project-form" class="project-form glass-panel" novalidate>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="pf-project-name">Project Name <span class="required">*</span></label>
+            <input type="text" id="pf-project-name" name="project_name" maxlength="255" placeholder="e.g. MyBrand Website Revamp" required />
+          </div>
+          <div class="form-group">
+            <label for="pf-budget">Available Budget <span class="required">*</span></label>
+            <input type="text" id="pf-budget" name="budget" maxlength="100" placeholder="e.g. $500 USD or Negotiable" required />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="pf-project-type">Type of Project <span class="required">*</span></label>
+            <select id="pf-project-type" name="project_type" required>
+              <option value="" disabled selected>Select a service...</option>
+              <option value="Web Development">Web Development</option>
+              <option value="Logo Creation">Logo Creation</option>
+              <option value="Fashion Design">Fashion Design</option>
+              <option value="Book Cover Design">Book Cover Design</option>
+              <option value="Custom / Unlisted">Custom / Unlisted</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="pf-business-name">Business / Company Name</label>
+            <input type="text" id="pf-business-name" name="business_name" maxlength="255" placeholder="Your business or personal brand name" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="pf-phone">Contact Phone</label>
+            <input type="tel" id="pf-phone" name="contact_phone" maxlength="50" placeholder="+251..." />
+          </div>
+          <div class="form-group">
+            <label for="pf-email">Contact Email</label>
+            <input type="email" id="pf-email" name="contact_email" maxlength="255" placeholder="you@example.com" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="pf-address">Address / Location</label>
+          <input type="text" id="pf-address" name="address" maxlength="500" placeholder="City, Country or full address" />
+        </div>
+        <div class="form-group">
+          <label for="pf-concept">Your Concept & Unique Ideas <span class="required">*</span></label>
+          <textarea id="pf-concept" name="custom_concept" maxlength="5000" rows="5" placeholder="Describe your vision in detail. What makes your project unique? What specific features, style, or references do you have in mind? Include anything not covered above..." required></textarea>
+          <div class="char-count" id="concept-count">0 / 5000</div>
+        </div>
+        <div class="form-group">
+          <label for="pf-description">Additional Notes / Description</label>
+          <textarea id="pf-description" name="additional_description" maxlength="5000" rows="3" placeholder="Any other details, deadlines, references, or preferences..."></textarea>
+        </div>
+        <div id="project-form-error" class="error-msg hidden"></div>
+        <div id="project-form-success" class="success-msg hidden"></div>
+        <button type="submit" class="btn-gold btn-full" id="project-submit-btn">
+          <span id="submit-label">SUBMIT PROJECT REQUEST</span>
+          <span id="submit-loading" class="hidden">Submitting...</span>
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ─── CONTACT ──────────────────────────────────────── -->
+  <section id="contact">
+    <div class="section-inner">
+      <div class="section-eyebrow">Reach Us</div>
+      <h2 class="section-title">Contact</h2>
+      <div class="contact-grid">
+        <div class="contact-card">
+          <div class="contact-icon">📞</div>
+          <h3>Phone</h3>
+          <a href="tel:+251970061607">+251 970 061 607</a>
+          <a href="tel:+251976062692">+251 976 062 692</a>
+        </div>
+        <div class="contact-card">
+          <div class="contact-icon">✉️</div>
+          <h3>Email</h3>
+          <a href="mailto:callmetigger2018@gmail.com">callmetigger2018@gmail.com</a>
+        </div>
+        <div class="contact-card">
+          <div class="contact-icon">💬</div>
+          <h3>Telegram</h3>
+          <a href="https://t.me/ApexCreations_Official" target="_blank" rel="noopener noreferrer">@ApexCreations_Official</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── FOOTER ───────────────────────────────────────── -->
+  <footer id="main-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="footer-logo-mark">▲</span>
+        <span class="footer-logo-text">APEX CREATIONS</span>
+      </div>
+      <p class="footer-tagline">Elite Digital Craftsmanship · Web · Logo · Fashion · Book Cover</p>
+      <div class="footer-links">
+        <a href="#services">Services</a>
+        <a href="#portfolio">Portfolio</a>
+        <a href="#learn">Academy</a>
+        <a href="#register">Commission</a>
+        <a href="https://t.me/ApexCreations_Official" target="_blank" rel="noopener">Telegram</a>
+      </div>
+      <p class="footer-copy">© 2024 Apex Creations. All rights reserved.</p>
+    </div>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     PHOTO LIGHTBOX (cinematic zoom)
+═══════════════════════════════════════════════════════ -->
+<div id="lightbox" class="hidden" role="dialog" aria-modal="true" aria-label="Image viewer">
+  <div id="lightbox-bg"></div>
+  <div id="lightbox-content">
+    <img id="lightbox-img" src="" alt="" />
+    <div id="lightbox-caption"></div>
+  </div>
+  <button id="lightbox-close" aria-label="Close image">✕</button>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     TOAST NOTIFICATIONS
+═══════════════════════════════════════════════════════ -->
+<div id="toast-container" aria-live="polite"></div>
+
+<script src="/js/app.js"></script>
+</body>
+</html>
